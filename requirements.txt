@@ -1,0 +1,5 @@
+neo4j==6.2.0
+pymgclient==1.6.0
+python-arango==8.3.3
+python-dotenv==1.1.1
+falkordb
