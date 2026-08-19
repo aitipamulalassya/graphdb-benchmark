@@ -2,7 +2,7 @@
 
 A comparative performance benchmark of five graph database systems using the Wiki-Vote dataset.
 
-The project evaluates:
+## 1. Databases Tested
 
 - CognoDB
 - Neo4j
@@ -10,56 +10,18 @@ The project evaluates:
 - FalkorDB
 - ArangoDB
 
-The benchmark measures graph traversal, lookup, indexed lookup, and aggregation performance using P50 latency, P95 latency, and success rate.
+## 2. Dataset
 
----
+The benchmark uses the **Wiki-Vote** dataset.
 
-## 1. Project Objective
-
-The objective of this project is to compare the performance of different graph database systems using the same dataset and equivalent logical workloads.
-
-The benchmark evaluates:
-
-1. Query correctness
-2. Data loading
-3. Graph traversal latency
-4. Point lookup latency
-5. Indexed lookup latency
-6. Aggregation latency
-7. P50 latency
-8. P95 latency
-9. Success rate
-
----
-
-## 2. Databases Evaluated
-
-The following five graph database systems were benchmarked:
-
-| Database | Evaluated |
-|---|---|
-| CognoDB | Yes |
-| Neo4j | Yes |
-| Memgraph | Yes |
-| FalkorDB | Yes |
-| ArangoDB | Yes |
-
----
-
-## 3. Dataset
-
-The benchmark uses the Wiki-Vote dataset.
-
-### Dataset Statistics
-
-| Metric | Count |
+| Metric | Value |
 |---|---:|
 | Nodes | 7,115 |
 | Relationships | 103,689 |
 
-The same prepared dataset was loaded into all five database systems.
+The same dataset was loaded into all five database systems.
 
-### Prepared Data
+### Dataset Files
 
 ```text
 data/
@@ -69,57 +31,68 @@ data/
     └── start_nodes.json
 ```
 
-### Node Format
+Example node:
 
 ```json
 {
-    "user_id": 3,
-    "group": 3
+  "user_id": 3,
+  "group": 3
 }
 ```
 
-### Edge Format
+Example relationship:
 
 ```json
 {
-    "src": 30,
-    "dst": 1412
+  "src": 30,
+  "dst": 1412
 }
 ```
 
 ---
 
-## 4. Benchmark Operations
+## 3. Benchmark Operations
 
-Six logical operations were tested.
+The following six operations were evaluated:
 
-### 4.1 1-Hop Traversal
+1. 1-hop traversal
+2. 2-hop traversal
+3. 3-hop traversal
+4. Point lookup
+5. Indexed lookup
+6. Aggregation
+
+### 1-Hop Traversal
 
 Traverses the graph from a starting node through one relationship level.
 
-### 4.2 2-Hop Traversal
+### 2-Hop Traversal
 
 Traverses the graph through two relationship levels.
 
-### 4.3 3-Hop Traversal
+### 3-Hop Traversal
 
 Traverses the graph through three relationship levels.
 
-### 4.4 Point Lookup
+### Point Lookup
 
-Retrieves a specific node using its user identifier.
+Retrieves a specific node using its `user_id`.
 
-### 4.5 Indexed Lookup
+### Indexed Lookup
 
 Retrieves nodes using the indexed `group` property.
 
-### 4.6 Aggregation
+### Aggregation
 
-Groups nodes by the `group` property and counts the nodes in each group.
+Groups nodes by `group` and counts the nodes in each group.
 
 ---
 
-## 5. Benchmark Configuration
+## 4. Benchmark Methodology
+
+The same prepared dataset and equivalent logical workloads were used for all databases.
+
+### Configuration
 
 | Parameter | Value |
 |---|---:|
@@ -129,11 +102,139 @@ Groups nodes by the `group` property and counts the nodes in each group.
 | Start nodes | 100 |
 | Metrics | P50, P95, Success Rate |
 
-Five warm-up iterations were performed before the measured iterations.
+Five warm-up iterations were executed before the measured iterations.
+
+### Metrics
+
+**P50 latency** is the median query latency.
+
+**P95 latency** represents the tail latency at the 95th percentile.
+
+**Success Rate** is calculated as:
+
+```text
+Successful iterations / Total iterations × 100
+```
+
+Lower latency is better.
+
+Higher success rate is better.
 
 ---
 
-## 6. Project Structure
+## 5. Environment
+
+The benchmark was executed using:
+
+| Environment | Value |
+|---|---|
+| Operating System | Windows |
+| Python | 3.12 |
+| Environment | Python virtual environment |
+| Dataset | Wiki-Vote |
+| Nodes | 7,115 |
+| Relationships | 103,689 |
+
+The databases were accessed using their respective Python client libraries/drivers.
+
+Some database instances were hosted remotely. Therefore, measured latency includes network communication between the benchmark machine and the database instance.
+
+### Deployment
+
+| Database | Deployment |
+|---|---|
+| CognoDB | Remote/free-tier instance |
+| Neo4j | Remote/free-tier instance |
+| Memgraph | Remote/free-tier instance |
+| FalkorDB | Remote/free-tier instance |
+| ArangoDB | Remote/free-tier instance |
+
+> Exact CPU and RAM specifications were not consistently available across all free-tier deployments. Therefore, the results should be interpreted as an application-level latency comparison rather than a controlled hardware benchmark.
+
+---
+
+## 6. Requirements
+
+- Python 3.12
+- Internet connection
+- Database accounts/access
+- Database connection credentials
+
+---
+
+## 7. Installation
+
+Clone the repository:
+
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd <YOUR_REPOSITORY_DIRECTORY>
+```
+
+Create a virtual environment:
+
+```powershell
+python -m venv .venv
+```
+
+Activate it:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+---
+
+## 8. Database Configuration
+
+Configure the database connection details in a local `.env` file.
+
+Example:
+
+```text
+COGNODB_URI=...
+COGNODB_USERNAME=...
+COGNODB_PASSWORD=...
+
+NEO4J_URI=...
+NEO4J_USERNAME=...
+NEO4J_PASSWORD=...
+NEO4J_DATABASE=...
+
+MEMGRAPH_URI=...
+MEMGRAPH_USERNAME=...
+MEMGRAPH_PASSWORD=...
+
+FALKORDB_HOST=...
+FALKORDB_PORT=...
+FALKORDB_USERNAME=...
+FALKORDB_PASSWORD=...
+
+ARANGODB_HOST=...
+ARANGODB_DATABASE=...
+ARANGODB_USERNAME=...
+ARANGODB_PASSWORD=...
+```
+
+Do not commit credentials or secrets to GitHub.
+
+Add `.env` to `.gitignore`:
+
+```text
+.env
+.venv/
+__pycache__/
+```
+
+---
+
+## 9. Project Structure
 
 ```text
 graphdb-benchmark/
@@ -180,345 +281,222 @@ graphdb-benchmark/
 ├── load_arangodb.py
 │
 ├── requirements.txt
-├── README.md
-└── report/
-    └── graphdb_benchmark_report.pdf
+└── README.md
 ```
 
 ---
 
-# 7. Requirements
+# 10. Data Loading
 
-The project uses Python.
+Each database can be populated using its corresponding loader.
 
-Create a virtual environment:
-
-```powershell
-python -m venv .venv
-```
-
-Activate the virtual environment:
+### CognoDB
 
 ```powershell
-.venv\Scripts\Activate.ps1
+python load_cognodb.py
 ```
 
-Install the required dependencies:
+### Neo4j
 
 ```powershell
-pip install -r requirements.txt
+python load_neo4j.py
 ```
 
----
+### Memgraph
 
-# 8. Database Configuration
+```powershell
+python load_memgraph.py
+```
 
-Each database requires its corresponding connection configuration.
+### FalkorDB
 
-The benchmark uses the respective database client/driver for each system.
+```powershell
+python load_falkordb.py
+```
 
-Make sure the required database instances are running and accessible before executing the tests.
+### ArangoDB
 
-Do not commit:
+```powershell
+python load_arangodb.py
+```
 
-- Passwords
-- API keys
-- Authentication tokens
-- Private connection credentials
-- Other secrets
+Each loader:
 
-Use environment variables or a local configuration file for sensitive values.
+1. Connects to the database.
+2. Clears existing benchmark data.
+3. Creates required indexes/collections.
+4. Loads 7,115 nodes.
+5. Loads 103,689 relationships.
+6. Verifies the loaded data.
 
----
-
-# 9. Data Loading
-
-The general data loading workflow is:
+Expected dataset size:
 
 ```text
-Connect to database
-        ↓
-Clear existing data
-        ↓
-Create collections / indexes
-        ↓
-Load 7,115 nodes
-        ↓
-Load 103,689 relationships
-        ↓
-Verify node count
-        ↓
-Verify relationship count
+Nodes: 7,115
+Relationships: 103,689
 ```
-
-Each database was loaded with the same Wiki-Vote dataset.
 
 ---
 
-# 10. CognoDB
+# 11. Query Validation
 
-Run the query validation:
+Before running latency benchmarks, validate the database queries.
+
+### CognoDB
 
 ```powershell
 python test_cognodb_queries.py
 ```
 
-Run the latency benchmark:
-
-```powershell
-python benchmark/latency_cognodb.py
-```
-
-### CognoDB Query Validation
-
-Final validation produced:
-
-```text
-1-hop result: 23
-2-hop result: 523
-3-hop result: 20698
-Point lookup result: 3
-Indexed lookup result: 721
-Aggregation: Successful
-Write result: True
-```
-
-### CognoDB Benchmark
-
-| Operation | P50 | P95 | Success |
-|---|---:|---:|---:|
-| 1-hop traversal | 307.743 ms | 374.291 ms | 20/20 |
-| 2-hop traversal | 307.024 ms | 328.901 ms | 20/20 |
-| 3-hop traversal | 307.343 ms | 1639.945 ms | 19/20 |
-| Point lookup | 295.053 ms | 327.472 ms | 20/20 |
-| Indexed lookup | 306.905 ms | 331.467 ms | 20/20 |
-| Aggregation | 306.461 ms | 318.537 ms | 20/20 |
-
-One 3-hop iteration experienced a transient connection failure. The driver attempted reconnection and the benchmark continued.
-
----
-
-# 11. Neo4j
-
-Run query validation:
+### Neo4j
 
 ```powershell
 python test_neo4j_queries.py
 ```
 
-Run the latency benchmark:
-
-```powershell
-python benchmark/latency_neo4j.py
-```
-
-### Neo4j Data Validation
-
-```text
-Nodes: 7,115
-Relationships: 103,689
-```
-
-### Neo4j Benchmark
-
-| Operation | P50 | P95 | Success |
-|---|---:|---:|---:|
-| 1-hop traversal | 86.491 ms | 98.599 ms | 20/20 |
-| 2-hop traversal | 85.689 ms | 99.890 ms | 20/20 |
-| 3-hop traversal | 85.276 ms | 112.568 ms | 20/20 |
-| Point lookup | 85.148 ms | 103.394 ms | 20/20 |
-| Indexed lookup | 84.526 ms | 105.560 ms | 20/20 |
-| Aggregation | 92.921 ms | 113.143 ms | 20/20 |
-
----
-
-# 12. Memgraph
-
-Run the connection/query test:
+### Memgraph
 
 ```powershell
 python test_memgraph.py
 ```
 
-Run the latency benchmark:
-
-```powershell
-python benchmark/latency_memgraph.py
-```
-
-### Memgraph Data Validation
-
-```text
-Nodes: 7,115
-Relationships: 103,689
-```
-
-### Memgraph Benchmark
-
-| Operation | P50 | P95 | Success |
-|---|---:|---:|---:|
-| 1-hop traversal | 169.587 ms | 183.180 ms | 20/20 |
-| 2-hop traversal | 205.669 ms | 207.192 ms | 20/20 |
-| 3-hop traversal | 172.803 ms | 205.934 ms | 20/20 |
-| Point lookup | 173.481 ms | 184.272 ms | 20/20 |
-| Indexed lookup | 171.460 ms | 179.086 ms | 20/20 |
-| Aggregation | 174.705 ms | 182.127 ms | 20/20 |
-
----
-
-# 13. FalkorDB
-
-Run the connection/query test:
+### FalkorDB
 
 ```powershell
 python test_falkordb.py
 ```
 
-Run the latency benchmark:
-
-```powershell
-python benchmark/latency_falkordb.py
-```
-
-### FalkorDB Data Validation
-
-```text
-Nodes: 7,115
-Relationships: 103,689
-```
-
-### FalkorDB Benchmark
-
-| Operation | P50 | P95 | Success |
-|---|---:|---:|---:|
-| 1-hop traversal | 56.176 ms | 73.059 ms | 20/20 |
-| 2-hop traversal | 56.887 ms | 70.260 ms | 20/20 |
-| 3-hop traversal | 58.708 ms | 78.467 ms | 20/20 |
-| Point lookup | 58.231 ms | 72.440 ms | 20/20 |
-| Indexed lookup | 55.920 ms | 67.902 ms | 20/20 |
-| Aggregation | 56.811 ms | 64.802 ms | 20/20 |
-
----
-
-# 14. ArangoDB
-
-Run query validation:
+### ArangoDB
 
 ```powershell
 python test_arangodb_queries.py
 ```
 
-Run the latency benchmark:
+The validation tests cover:
 
-```powershell
-python benchmark/latency_arangodb.py
-```
+- 1-hop traversal
+- 2-hop traversal
+- 3-hop traversal
+- Point lookup
+- Indexed lookup
+- Aggregation
+- Write operation
 
-### ArangoDB Data Validation
-
-```text
-Nodes: 7,115
-Relationships: 103,689
-```
-
-### ArangoDB Benchmark
-
-| Operation | P50 | P95 | Success |
-|---|---:|---:|---:|
-| 1-hop traversal | 311.050 ms | 439.034 ms | 20/20 |
-| 2-hop traversal | 345.912 ms | 412.411 ms | 20/20 |
-| 3-hop traversal | 352.176 ms | 522.280 ms | 20/20 |
-| Point lookup | 308.841 ms | 386.596 ms | 20/20 |
-| Indexed lookup | 897.547 ms | 1039.788 ms | 20/20 |
-| Aggregation | 335.664 ms | 379.947 ms | 20/20 |
+This ensures that the data and queries are working before measuring latency.
 
 ---
 
-# 15. Query Validation
+# 12. Running the Benchmarks
 
-Before latency benchmarking, the query implementations were tested.
+Run the latency benchmark for each database.
 
-Representative results:
-
-| Operation | Result |
-|---|---:|
-| 1-hop traversal | 23 |
-| 2-hop traversal | 523 |
-| 3-hop traversal | 20,698 |
-| Point lookup | 3 |
-| Indexed lookup | 721 |
-| Aggregation | Successful |
-| Write | Successful |
-
-The aggregation query produced the expected group counts.
-
-The databases were therefore validated before running the latency benchmarks.
-
----
-
-# 16. Running All Benchmarks
-
-After the databases are configured and the data is loaded, run:
+### CognoDB
 
 ```powershell
 python benchmark/latency_cognodb.py
 ```
 
+### Neo4j
+
 ```powershell
 python benchmark/latency_neo4j.py
 ```
+
+### Memgraph
 
 ```powershell
 python benchmark/latency_memgraph.py
 ```
 
+### FalkorDB
+
 ```powershell
 python benchmark/latency_falkordb.py
 ```
+
+### ArangoDB
 
 ```powershell
 python benchmark/latency_arangodb.py
 ```
 
-Then generate the final comparison:
+Each benchmark performs:
+
+```text
+Connect
+   ↓
+Select start nodes
+   ↓
+5 warm-up iterations
+   ↓
+20 measured iterations
+   ↓
+Calculate P50
+   ↓
+Calculate P95
+   ↓
+Calculate success rate
+   ↓
+Save JSON results
+```
+
+---
+
+# 13. Generate Final Comparison
+
+After all five benchmarks have completed:
 
 ```powershell
 python benchmark/compare_results.py
 ```
 
+The combined results are saved to:
+
+```text
+results/benchmark_comparison.json
+```
+
 ---
 
-# 17. Final Comparison
+# 14. Complete Results
 
-## P50 Latency
+## 14.1 P50 Latency
 
-Lower latency is better.
+Lower is better.
+
+All values are in milliseconds.
 
 | Operation | CognoDB | Neo4j | Memgraph | FalkorDB | ArangoDB |
 |---|---:|---:|---:|---:|---:|
-| 1-hop traversal | 307.743 ms | 86.491 ms | 169.587 ms | **56.176 ms** | 311.050 ms |
-| 2-hop traversal | 307.024 ms | 85.689 ms | 205.669 ms | **56.887 ms** | 345.912 ms |
-| 3-hop traversal | 307.343 ms | 85.276 ms | 172.803 ms | **58.708 ms** | 352.176 ms |
-| Point lookup | 295.053 ms | 85.148 ms | 173.481 ms | **58.231 ms** | 308.841 ms |
-| Indexed lookup | 306.905 ms | 84.526 ms | 171.460 ms | **55.920 ms** | 897.547 ms |
-| Aggregation | 306.461 ms | 92.921 ms | 174.705 ms | **56.811 ms** | 335.664 ms |
+| 1-hop traversal | 307.743 | 86.491 | 169.587 | **56.176** | 311.050 |
+| 2-hop traversal | 307.024 | 85.689 | 205.669 | **56.887** | 345.912 |
+| 3-hop traversal | 307.343 | 85.276 | 172.803 | **58.708** | 352.176 |
+| Point lookup | 295.053 | 85.148 | 173.481 | **58.231** | 308.841 |
+| Indexed lookup | 306.905 | 84.526 | 171.460 | **55.920** | 897.547 |
+| Aggregation | 306.461 | 92.921 | 174.705 | **56.811** | 335.664 |
 
 ---
 
-# 18. P95 Latency
+## 14.2 P95 Latency
+
+Lower is better.
+
+All values are in milliseconds.
 
 | Operation | CognoDB | Neo4j | Memgraph | FalkorDB | ArangoDB |
 |---|---:|---:|---:|---:|---:|
-| 1-hop traversal | 374.291 ms | 98.599 ms | 183.180 ms | **73.059 ms** | 439.034 ms |
-| 2-hop traversal | 328.901 ms | 99.890 ms | 207.192 ms | **70.260 ms** | 412.411 ms |
-| 3-hop traversal | 1639.945 ms | 112.568 ms | 205.934 ms | **78.467 ms** | 522.280 ms |
-| Point lookup | 327.472 ms | 103.394 ms | 184.272 ms | **72.440 ms** | 386.596 ms |
-| Indexed lookup | 331.467 ms | 105.560 ms | 179.086 ms | **67.902 ms** | 1039.788 ms |
-| Aggregation | 318.537 ms | 113.143 ms | 182.127 ms | **64.802 ms** | 379.947 ms |
+| 1-hop traversal | 374.291 | 98.599 | 183.180 | **73.059** | 439.034 |
+| 2-hop traversal | 328.901 | 99.890 | 207.192 | **70.260** | 412.411 |
+| 3-hop traversal | 1639.945 | 112.568 | 205.934 | **78.467** | 522.280 |
+| Point lookup | 327.472 | 103.394 | 184.272 | **72.440** | 386.596 |
+| Indexed lookup | 331.467 | 105.560 | 179.086 | **67.902** | 1039.788 |
+| Aggregation | 318.537 | 113.143 | 182.127 | **64.802** | 379.947 |
 
 ---
 
-# 19. Success Rate
+## 14.3 Success Rate
+
+Higher is better.
 
 | Operation | CognoDB | Neo4j | Memgraph | FalkorDB | ArangoDB |
 |---|---:|---:|---:|---:|---:|
@@ -531,23 +509,21 @@ Lower latency is better.
 
 ---
 
-# 20. Overall Ranking
+# 15. Overall Average P50
 
-The overall average P50 latency was calculated across the six operations.
+The overall average is calculated across the six benchmark operations.
 
 | Rank | Database | Average P50 |
 |---:|---|---:|
 | 1 | **FalkorDB** | **57.122 ms** |
-| 2 | **Neo4j** | **86.675 ms** |
-| 3 | **Memgraph** | **177.951 ms** |
-| 4 | **CognoDB** | **304.637 ms** |
-| 5 | **ArangoDB** | **425.198 ms** |
-
-Lower latency is better.
+| 2 | Neo4j | 86.675 ms |
+| 3 | Memgraph | 177.951 ms |
+| 4 | CognoDB | 304.637 ms |
+| 5 | ArangoDB | 425.198 ms |
 
 ---
 
-# 21. Fastest Database by Operation
+# 16. Fastest Database by Operation
 
 | Operation | Fastest Database | P50 |
 |---|---|---:|
@@ -558,35 +534,33 @@ Lower latency is better.
 | Indexed lookup | **FalkorDB** | 55.920 ms |
 | Aggregation | **FalkorDB** | 56.811 ms |
 
-FalkorDB was the fastest database in all six tested operations.
+FalkorDB was the fastest database for all six operations.
 
 ---
 
-# 22. Performance Analysis
+# 17. Analysis
 
-## FalkorDB
+### FalkorDB
 
 FalkorDB achieved the best overall performance.
 
 Its P50 latency remained between approximately 55.9 ms and 58.7 ms across all six operations.
 
-It also achieved a 100% success rate for every benchmark operation.
+It also achieved a 100% success rate for every operation.
 
-## Neo4j
+### Neo4j
 
-Neo4j was the second-fastest system.
+Neo4j was the second-fastest database.
 
-Its P50 latency ranged from 84.526 ms to 92.921 ms.
+Its P50 latency ranged from 84.526 ms to 92.921 ms, with a 100% success rate across all operations.
 
-All operations completed successfully.
-
-## Memgraph
+### Memgraph
 
 Memgraph achieved an overall average P50 latency of 177.951 ms.
 
-All benchmark operations completed successfully.
+All six operations completed successfully.
 
-## CognoDB
+### CognoDB
 
 CognoDB achieved an overall average P50 latency of 304.637 ms.
 
@@ -594,69 +568,55 @@ Five operations achieved a 100% success rate.
 
 One 3-hop iteration experienced a transient connection failure, resulting in a 95% success rate for that operation.
 
-The 3-hop P95 latency was 1639.945 ms, which was substantially higher than its P50 latency.
+The 3-hop P95 latency was 1639.945 ms, which was significantly higher than its P50 latency.
 
-## ArangoDB
+### ArangoDB
 
 ArangoDB achieved an overall average P50 latency of 425.198 ms.
 
-Its indexed lookup operation had a comparatively high P50 latency of 897.547 ms and P95 latency of 1039.788 ms.
+Indexed lookup was its slowest operation:
 
-All benchmark operations completed successfully.
+| Metric | Value |
+|---|---:|
+| P50 | 897.547 ms |
+| P95 | 1039.788 ms |
 
----
-
-
-
-# 23. Limitations
-
-The benchmark has the following limitations:
-
-1. Only the Wiki-Vote dataset was evaluated.
-2. Only six query workloads were tested.
-3. Each operation used 20 measured iterations.
-4. Five warm-up iterations were performed.
-5. Network latency may affect the results because some database systems were hosted remotely.
-6. Hardware and infrastructure configurations may differ between database deployments.
-7. CPU utilization was not measured.
-8. Memory consumption was not measured.
-9. Storage consumption was not measured.
-10. Throughput was not measured.
-11. CognoDB experienced one transient connection failure during the 3-hop benchmark.
-12. The results represent performance observed under this specific experimental environment and should not be interpreted as a universal ranking of graph databases.
+All six operations completed successfully.
 
 ---
 
-# 24. Conclusion
+# 18. Key Findings
 
-Based on the benchmark results, FalkorDB achieved the best overall performance for the selected workload.
-
-FalkorDB recorded the lowest P50 latency in all six tested operations:
-
-- 1-hop traversal
-- 2-hop traversal
-- 3-hop traversal
-- Point lookup
-- Indexed lookup
-- Aggregation
-
-Its overall average P50 latency was:
-
-**57.122 ms**
-
-Neo4j was the second-fastest system with an overall average P50 latency of:
-
-**86.675 ms**
-
-FalkorDB also achieved a 100% success rate across all six operations.
-
-Therefore, for the Wiki-Vote dataset, workload, benchmark configuration, and environment used in this project, **FalkorDB demonstrated the best overall latency performance among the five evaluated graph database systems.**
+- **FalkorDB was the fastest database in all six operations.**
+- FalkorDB achieved the lowest overall average P50 latency of **57.122 ms**.
+- Neo4j ranked second with **86.675 ms**.
+- Memgraph ranked third with **177.951 ms**.
+- CognoDB ranked fourth with **304.637 ms**.
+- ArangoDB ranked fifth with **425.198 ms**.
+- All databases achieved 100% success for 1-hop traversal.
+- All databases achieved 100% success for 2-hop traversal.
+- CognoDB had one transient failure during the 3-hop benchmark.
+- ArangoDB had the highest indexed lookup latency.
+- FalkorDB showed the most consistent latency across the tested operations.
 
 ---
 
-# 25. Result Files
+# 19. Caveats
 
-The benchmark generates the following result files:
+- Only the Wiki-Vote dataset was evaluated.
+- Only six query workloads were tested.
+- Each operation used 20 measured iterations.
+- Five warm-up iterations were performed.
+- Some database instances were hosted remotely.
+- Network latency may affect the measured results.
+- Hardware and instance configurations were not identical across all platforms.
+- CPU, memory, storage usage, and throughput were not measured.
+- CognoDB experienced one transient connection failure during 3-hop traversal.
+- The results represent the tested environment and should not be considered a universal ranking of graph databases.
+
+---
+
+# 20. Result Files
 
 ```text
 results/
@@ -668,80 +628,26 @@ results/
 └── benchmark_comparison.json
 ```
 
-The final combined comparison is stored in:
+---
+
+# 21. Conclusion
+
+For the Wiki-Vote dataset and benchmark configuration used in this project, **FalkorDB demonstrated the best overall latency performance**.
+
+### Final Ranking
 
 ```text
-results/benchmark_comparison.json
+1. FalkorDB  - 57.122 ms
+2. Neo4j     - 86.675 ms
+3. Memgraph  - 177.951 ms
+4. CognoDB   - 304.637 ms
+5. ArangoDB  - 425.198 ms
 ```
 
----
+FalkorDB achieved:
 
-# 26. Reproducibility
+- **57.122 ms overall average P50**
+- **100% success rate**
+- **6/6 fastest operations**
 
-To reproduce the benchmark:
-
-### Step 1: Activate the virtual environment
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-### Step 2: Install dependencies
-
-```powershell
-pip install -r requirements.txt
-```
-
-### Step 3: Validate queries
-
-```powershell
-python test_cognodb_queries.py
-python test_neo4j_queries.py
-python test_memgraph.py
-python test_falkordb.py
-python test_arangodb_queries.py
-```
-
-### Step 4: Run latency benchmarks
-
-```powershell
-python benchmark/latency_cognodb.py
-python benchmark/latency_neo4j.py
-python benchmark/latency_memgraph.py
-python benchmark/latency_falkordb.py
-python benchmark/latency_arangodb.py
-```
-
-### Step 5: Generate final comparison
-
-```powershell
-python benchmark/compare_results.py
-```
-
----
-
-# 27. Final Result
-
-## Winner: FalkorDB
-
-**Overall Average P50: 57.122 ms**
-
-**Fastest in 6 out of 6 operations**
-
-**Success Rate: 100%**
-
-Final ranking:
-
-```text
-1. FalkorDB   - 57.122 ms
-2. Neo4j      - 86.675 ms
-3. Memgraph   - 177.951 ms
-4. CognoDB    - 304.637 ms
-5. ArangoDB   - 425.198 ms
-```
-
----
-
-- [x] Final comparison generated
-- [x] LaTeX report prepared
-- [x] README prepared
+Therefore, FalkorDB was the best-performing database in this benchmark under the tested environment and workload.
